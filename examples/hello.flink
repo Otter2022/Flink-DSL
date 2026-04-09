@@ -1,0 +1,19 @@
+pipeline clickstream {
+    parallelism 4
+
+    source events from kafka("clicks") schema {
+        userId : string
+        amount : double
+        ts     : long
+    }
+
+    filter events.userId != ""
+    filter events.amount > 0
+
+    map {
+        userId = events.userId
+        amount = events.amount * 1.1
+    }
+
+    sink to kafka("enriched-clicks") format json
+}

@@ -1,0 +1,5 @@
+{"userId":"alice","amount":42.0,"ts":1700000000}
+{"userId":"bob","amount":-5.0,"ts":1700000001}
+{"userId":"","amount":100.0,"ts":1700000002}
+{"userId":"carol","amount":0.0,"ts":1700000003}
+{"userId":"dave","amount":200.0,"ts":1700000004}
