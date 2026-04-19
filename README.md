@@ -1,8 +1,10 @@
 # Flink DSL
 
 ## Current State of Project
+TODO
 
 ## Usage of Visitor
+TODO
 
 ## Assumed already installed
 
