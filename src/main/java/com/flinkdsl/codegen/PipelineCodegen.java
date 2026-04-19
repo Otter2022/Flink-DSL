@@ -8,15 +8,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Generates a complete Flink DataStream API Java source file for one pipeline.
- *
- * Records are represented in-memory as Jackson ObjectNode, so no schema POJO
- * is needed. The source reads JSON strings from Kafka/file, parses them, and
- * transforms/filters operate on the ObjectNode directly.
- *
- * Output class name: <PipelineName>Job  (e.g. "clickstream" → "ClickstreamJob")
- */
 public class PipelineCodegen {
 
     private final DataflowGraph graph;
@@ -27,7 +18,6 @@ public class PipelineCodegen {
     public PipelineCodegen(DataflowGraph graph) {
         this.graph = graph;
 
-        // Build schema lookup from the source node
         Map<String, SchemaType> s = new LinkedHashMap<>();
         for (FieldDecl f : graph.source().schema()) {
             s.put(f.name(), f.type());
@@ -35,8 +25,6 @@ public class PipelineCodegen {
         this.schema  = Collections.unmodifiableMap(s);
         this.exprGen = new ExprCodegen(schema);
     }
-
-    // ── Entry point ───────────────────────────────────────────────────────────
 
     public String generate() {
         String className = capitalize(graph.pipelineName()) + "Job";
@@ -51,7 +39,6 @@ public class PipelineCodegen {
         sb.append("                StreamExecutionEnvironment.getExecutionEnvironment();\n");
         sb.append("        env.setParallelism(").append(graph.parallelism()).append(");\n\n");
 
-        // Walk nodes in topological order (source → ... → sink)
         String prevVar = null;
         for (DataflowNode node : graph.nodes()) {
             prevVar = emitNode(sb, node, prevVar);
@@ -62,8 +49,6 @@ public class PipelineCodegen {
         return sb.toString();
     }
 
-    // ── Node emission ─────────────────────────────────────────────────────────
-
     private String emitNode(StringBuilder sb, DataflowNode node, String prevVar) {
         return switch (node) {
             case DataflowNode.Source  n -> emitSource(sb, n);
@@ -73,8 +58,6 @@ public class PipelineCodegen {
             case DataflowNode.Sink    n -> { emitSink(sb, n, prevVar); yield prevVar; }
         };
     }
-
-    // ── Source ────────────────────────────────────────────────────────────────
 
     private String emitSource(StringBuilder sb, DataflowNode.Source node) {
         String var = node.streamName();
@@ -101,8 +84,6 @@ public class PipelineCodegen {
         return var;
     }
 
-    // ── Filter ────────────────────────────────────────────────────────────────
-
     private String emitFilter(StringBuilder sb, DataflowNode.Filter node, String prevVar) {
         String var = nextVar();
         sb.append("        // ── ").append(node.id()).append("\n");
@@ -111,8 +92,6 @@ public class PipelineCodegen {
         sb.append("                record -> ").append(exprGen.generate(node.predicate())).append(");\n\n");
         return var;
     }
-
-    // ── Map ───────────────────────────────────────────────────────────────────
 
     private String emitMap(StringBuilder sb, DataflowNode.Map node, String prevVar) {
         String var = nextVar();
@@ -128,10 +107,6 @@ public class PipelineCodegen {
         sb.append("        });\n\n");
         return var;
     }
-
-    // ── FlatMap ───────────────────────────────────────────────────────────────
-    // Uses an anonymous inner class to avoid Flink's generic type erasure issues
-    // with lambdas on FlatMapFunction<ObjectNode, ObjectNode>.
 
     private String emitFlatMap(StringBuilder sb, DataflowNode.FlatMap node, String prevVar) {
         String var = nextVar();
@@ -152,8 +127,6 @@ public class PipelineCodegen {
         sb.append("                });\n\n");
         return var;
     }
-
-    // ── Sink ──────────────────────────────────────────────────────────────────
 
     private void emitSink(StringBuilder sb, DataflowNode.Sink node, String prevVar) {
         sb.append("        // ── ").append(node.id()).append("\n");
@@ -181,8 +154,6 @@ public class PipelineCodegen {
             }
         }
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private String nextVar() { return "s" + (streamIdx++); }
 

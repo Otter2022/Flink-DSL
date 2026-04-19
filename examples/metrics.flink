@@ -1,0 +1,25 @@
+// Normalize and forward application performance metrics
+pipeline metrics {
+    parallelism 8
+
+    source events from kafka("app-metrics") schema {
+        service     : string
+        latencyMs   : long
+        errorCount  : int
+        requestCount : int
+        region      : string
+    }
+
+    filter events.service != ""
+    filter events.requestCount > 0
+    filter events.latencyMs >= 0
+
+    flatMap {
+        service      = events.service
+        region       = events.region
+        latencyMs    = events.latencyMs
+        errorRate    = events.errorCount / events.requestCount
+    }
+
+    sink to kafka("normalized-metrics") format json
+}

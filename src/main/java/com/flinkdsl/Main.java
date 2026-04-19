@@ -37,8 +37,6 @@ public class Main {
         }
     }
 
-    // ── Shared: parse → AST → semantic check → IR ─────────────────────────────
-
     private static List<DataflowGraph> compile(Path inputFile) throws IOException {
         CharStream input = CharStreams.fromPath(inputFile);
 
@@ -69,14 +67,10 @@ public class Main {
         return new GraphBuilder().build(ast);
     }
 
-    // ── Code generation mode ──────────────────────────────────────────────────
-
     private static void runCodegen(Path inputFile, Path outputDir) throws Exception {
         List<DataflowGraph> graphs = compile(inputFile);
         new FlinkJobGenerator().generate(graphs, outputDir);
     }
-
-    // ── Local interpreter mode ────────────────────────────────────────────────
 
     private static void runInterpreter(Path dslFile, Path inputFile, Path outputFile)
             throws Exception {
@@ -85,8 +79,6 @@ public class Main {
             new PipelineInterpreter(graph).run(inputFile, outputFile);
         }
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private static BaseErrorListener errorListener(String phase) {
         return new BaseErrorListener() {

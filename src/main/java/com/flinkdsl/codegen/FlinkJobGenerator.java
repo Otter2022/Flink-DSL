@@ -7,11 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-/**
- * Writes one generated Flink job Java source file per pipeline to an output directory.
- *
- * Output file naming: <PipelineName>Job.java  (e.g. "clickstream" → "ClickstreamJob.java")
- */
 public class FlinkJobGenerator {
 
     public void generate(List<DataflowGraph> graphs, Path outputDir) throws IOException {

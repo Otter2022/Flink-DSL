@@ -1,5 +1,9 @@
 # Flink DSL
 
+## Current State of Project
+
+## Usage of Visitor
+
 ## Assumed already installed
 
 - Java 25 (JDK)

@@ -18,14 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Executes a pipeline locally, reading JSON-lines from an input file and
- * writing JSON-lines to an output file.  No Flink installation required.
- *
- * Each line of the input file must be a valid JSON object matching the
- * source schema, e.g.:
- *   {"userId":"alice","amount":42.0,"ts":1700000000}
- */
 public class PipelineInterpreter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -43,8 +35,6 @@ public class PipelineInterpreter {
         this.evaluator = new ExprEvaluator(Collections.unmodifiableMap(schema));
     }
 
-    // ── Entry point ───────────────────────────────────────────────────────────
-
     public void run(Path inputFile, Path outputFile) throws IOException {
         List<ObjectNode> records = readInput(inputFile);
 
@@ -57,12 +47,10 @@ public class PipelineInterpreter {
                 graph.pipelineName(), records.size(), outputFile);
     }
 
-    // ── Node application ──────────────────────────────────────────────────────
-
     private List<ObjectNode> applyNode(DataflowNode node, List<ObjectNode> records) {
         return switch (node) {
-            case DataflowNode.Source  ignored -> records;  // already loaded
-            case DataflowNode.Sink    ignored -> records;  // written after the loop
+            case DataflowNode.Source  ignored -> records;
+            case DataflowNode.Sink    ignored -> records;
 
             case DataflowNode.Filter f -> {
                 List<ObjectNode> out = new ArrayList<>();
@@ -83,8 +71,6 @@ public class PipelineInterpreter {
             }
 
             case DataflowNode.FlatMap fm -> {
-                // Each input record produces exactly one output record given the
-                // current grammar (no fan-out). Emit one record per assignment set.
                 List<ObjectNode> out = new ArrayList<>();
                 for (ObjectNode r : records) {
                     out.add(applyAssignments(fm.assignments(), r));
@@ -93,8 +79,6 @@ public class PipelineInterpreter {
             }
         };
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private ObjectNode applyAssignments(List<FieldAssignment> assignments, ObjectNode record) {
         ObjectNode out = MAPPER.createObjectNode();

@@ -1,9 +1,5 @@
 package com.flinkdsl.ast;
 
-/**
- * Visitor over the typed AST.
- * Each later phase (semantic analysis, IR construction, codegen) implements this.
- */
 public interface AstVisitor<T> {
 
     T visitProgram(Program node);
@@ -28,7 +24,6 @@ public interface AstVisitor<T> {
     T visitStringLiteral(ExprNode.StringLiteral node);
     T visitBoolLiteral(ExprNode.BoolLiteral node);
 
-    /** Dispatch helper — call this instead of a manual instanceof chain. */
     default T visitExpr(ExprNode node) {
         return switch (node) {
             case ExprNode.AndExpr      e -> visitAndExpr(e);
@@ -45,7 +40,6 @@ public interface AstVisitor<T> {
         };
     }
 
-    /** Dispatch helper for transforms. */
     default T visitTransform(TransformNode node) {
         return switch (node) {
             case TransformNode.FilterTransform  t -> visitFilterTransform(t);

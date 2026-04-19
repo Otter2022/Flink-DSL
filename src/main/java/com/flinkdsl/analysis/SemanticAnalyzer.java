@@ -4,27 +4,10 @@ import com.flinkdsl.ast.*;
 
 import java.util.*;
 
-/**
- * Walks the AST and collects semantic errors.
- * Collects all errors rather than failing on the first one.
- *
- * Checks performed:
- *   1. No duplicate pipeline names within a program.
- *   2. Parallelism must be >= 1.
- *   3. No duplicate field names within a schema.
- *   4. Every field access root must match the source stream name.
- *   5. Every field name must be declared in the schema.
- *   6. Filter predicates must be boolean-typed.
- *   7. Arithmetic operands must be numeric.
- *   8. Comparison operands must be compatible types.
- *   9. AND / OR operands must be boolean.
- *  10. NOT operand must be boolean.
- */
 public class SemanticAnalyzer implements AstVisitor<Void> {
 
     private final List<SemanticError> errors = new ArrayList<>();
 
-    // State threaded through the walk
     private String currentPipeline             = null;
     private String currentSource               = null;
     private Map<String, SchemaType> currentSchema = Map.of();
@@ -33,8 +16,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
         visitProgram(program);
         return Collections.unmodifiableList(errors);
     }
-
-    // ── Program ───────────────────────────────────────────────────────────────
 
     @Override
     public Void visitProgram(Program node) {
@@ -47,8 +28,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
         node.pipelines().forEach(this::visitPipeline);
         return null;
     }
-
-    // ── Pipeline ──────────────────────────────────────────────────────────────
 
     @Override
     public Void visitPipeline(Pipeline node) {
@@ -68,13 +47,10 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
         return null;
     }
 
-    // ── Source / Sink ─────────────────────────────────────────────────────────
-
     @Override
     public Void visitSourceNode(SourceNode node) {
         currentSource = node.name();
 
-        // Check for duplicate field names in schema
         Set<String> seen = new HashSet<>();
         for (FieldDecl f : node.schema()) {
             if (!seen.add(f.name())) {
@@ -82,7 +58,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
             }
         }
 
-        // Build the schema lookup used by type inference
         Map<String, SchemaType> schema = new LinkedHashMap<>();
         for (FieldDecl f : node.schema()) {
             schema.put(f.name(), f.type());
@@ -95,8 +70,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
     public Void visitSinkNode(SinkNode node) {
         return null;
     }
-
-    // ── Transforms ────────────────────────────────────────────────────────────
 
     @Override
     public Void visitFilterTransform(TransformNode.FilterTransform node) {
@@ -121,13 +94,9 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
 
     @Override
     public Void visitFieldAssignment(FieldAssignment node) {
-        // Type-check the RHS expression; output field names are unconstrained
         inferType(node.value());
         return null;
     }
-
-    // ── Expression visitors (structural walk, delegates to inferType) ──────────
-    // These exist to satisfy AstVisitor but type work is done in inferType below.
 
     @Override public Void visitAndExpr(ExprNode.AndExpr node)           { inferType(node); return null; }
     @Override public Void visitOrExpr(ExprNode.OrExpr node)             { inferType(node); return null; }
@@ -141,12 +110,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
     @Override public Void visitStringLiteral(ExprNode.StringLiteral node) { return null; }
     @Override public Void visitBoolLiteral(ExprNode.BoolLiteral node)   { return null; }
 
-    // ── Type inference ────────────────────────────────────────────────────────
-
-    /**
-     * Infers the type of an expression and records errors for violations.
-     * Returns null if the type cannot be determined (e.g. after an earlier error).
-     */
     private SchemaType inferType(ExprNode expr) {
         return switch (expr) {
             case ExprNode.IntLiteral    ignored -> SchemaType.INT;
@@ -227,7 +190,6 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
         return promoteNumeric(l, r);
     }
 
-    /** Standard numeric promotion: widest type wins. */
     private static SchemaType promoteNumeric(SchemaType a, SchemaType b) {
         if (a == SchemaType.DOUBLE || b == SchemaType.DOUBLE) return SchemaType.DOUBLE;
         if (a == SchemaType.FLOAT  || b == SchemaType.FLOAT)  return SchemaType.FLOAT;
@@ -243,14 +205,11 @@ public class SemanticAnalyzer implements AstVisitor<Void> {
             error("cannot compare " + l + " with " + r);
             return;
         }
-        // Ordering operators don't make sense for booleans
         if (l == SchemaType.BOOLEAN && (op == CompOp.LT || op == CompOp.GT
                 || op == CompOp.LTE || op == CompOp.GTE)) {
             error("operator " + op + " cannot be applied to boolean");
         }
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void error(String msg) {
         errors.add(new SemanticError("[" + currentPipeline + "] " + msg));

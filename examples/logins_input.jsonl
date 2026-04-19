@@ -1,0 +1,5 @@
+{"userId":"alice","attempts":5,"success":false,"ipHash":"abc123","timestamp":1700000000}
+{"userId":"bob","attempts":2,"success":false,"ipHash":"def456","timestamp":1700000001}
+{"userId":"carol","attempts":7,"success":true,"ipHash":"ghi789","timestamp":1700000002}
+{"userId":"","attempts":10,"success":false,"ipHash":"jkl012","timestamp":1700000003}
+{"userId":"dave","attempts":4,"success":false,"ipHash":"mno345","timestamp":1700000004}

@@ -1,0 +1,5 @@
+{"orderId":"o1","price":250.0,"quantity":2,"status":"completed"}
+{"orderId":"o2","price":50.0,"quantity":1,"status":"completed"}
+{"orderId":"o3","price":300.0,"quantity":0,"status":"completed"}
+{"orderId":"o4","price":150.0,"quantity":3,"status":"cancelled"}
+{"orderId":"o5","price":500.0,"quantity":1,"status":"pending"}

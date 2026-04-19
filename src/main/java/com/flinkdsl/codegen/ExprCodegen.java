@@ -4,14 +4,6 @@ import com.flinkdsl.ast.*;
 
 import java.util.Map;
 
-/**
- * Translates an ExprNode into a Java expression string suitable for use
- * inside a generated Flink lambda. Records are accessed as ObjectNode
- * via Jackson, so field reads use the appropriate JsonNode accessor method.
- *
- * Example: ExprNode for `events.amount * 1.1`
- *   → "(record.get(\"amount\").asDouble() * 1.1)"
- */
 public class ExprCodegen {
 
     private final Map<String, SchemaType> schema;
@@ -19,8 +11,6 @@ public class ExprCodegen {
     public ExprCodegen(Map<String, SchemaType> schema) {
         this.schema = schema;
     }
-
-    // ── Main entry ────────────────────────────────────────────────────────────
 
     public String generate(ExprNode expr) {
         return switch (expr) {
@@ -54,9 +44,6 @@ public class ExprCodegen {
         };
     }
 
-    // ── Type inference (used for comparison dispatch) ─────────────────────────
-
-    /** Returns the Java type that generate() will produce for this expression. */
     SchemaType inferType(ExprNode expr) {
         return switch (expr) {
             case ExprNode.IntLiteral    ignored -> SchemaType.INT;
@@ -70,13 +57,10 @@ public class ExprCodegen {
         };
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
     private String compareCode(ExprNode.CompareExpr e) {
         String lc = generate(e.left());
         String rc = generate(e.right());
 
-        // Strings need .equals() instead of == / !=
         if (inferType(e.left()) == SchemaType.STRING) {
             return switch (e.op()) {
                 case EQ  -> lc + ".equals(" + rc + ")";
@@ -93,7 +77,6 @@ public class ExprCodegen {
         return "(" + lc + " " + op + " " + rc + ")";
     }
 
-    /** Jackson accessor suffix for reading a typed value from a JsonNode. */
     static String jacksonAccessor(SchemaType type) {
         return switch (type) {
             case STRING  -> ".asText()";

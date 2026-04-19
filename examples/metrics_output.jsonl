@@ -1,0 +1,3 @@
+{"service":"api","region":"us-east","latencyMs":120,"errorRate":0.02}
+{"service":"auth","region":"us-east","latencyMs":200,"errorRate":0.0625}
+{"service":"db","region":"ap-south","latencyMs":350,"errorRate":0.025}

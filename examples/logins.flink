@@ -1,0 +1,25 @@
+// Flag suspicious login attempts
+pipeline logins {
+    parallelism 2
+
+    source logins from kafka("auth-events") schema {
+        userId    : string
+        attempts  : int
+        success   : boolean
+        ipHash    : string
+        timestamp : long
+    }
+
+    filter logins.userId != ""
+    filter not logins.success
+    filter logins.attempts > 3
+
+    map {
+        userId    = logins.userId
+        attempts  = logins.attempts
+        ipHash    = logins.ipHash
+        timestamp = logins.timestamp
+    }
+
+    sink to kafka("suspicious-logins") format json
+}

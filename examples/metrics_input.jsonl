@@ -1,0 +1,5 @@
+{"service":"api","latencyMs":120,"errorCount":2,"requestCount":100,"region":"us-east"}
+{"service":"","latencyMs":50,"errorCount":0,"requestCount":50,"region":"eu-west"}
+{"service":"worker","latencyMs":0,"errorCount":0,"requestCount":0,"region":"us-west"}
+{"service":"auth","latencyMs":200,"errorCount":5,"requestCount":80,"region":"us-east"}
+{"service":"db","latencyMs":350,"errorCount":1,"requestCount":40,"region":"ap-south"}

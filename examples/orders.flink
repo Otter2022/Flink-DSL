@@ -1,0 +1,22 @@
+// Keep only large completed orders and compute total after tax
+pipeline orders {
+    parallelism 4
+
+    source orders from file("data/orders.jsonl") schema {
+        orderId  : string
+        price    : double
+        quantity : int
+        status   : string
+    }
+
+    filter orders.status != "cancelled"
+    filter orders.price > 100.0
+    filter orders.quantity > 0
+
+    map {
+        orderId = orders.orderId
+        total   = orders.price * 1.08
+    }
+
+    sink to file("output/large-orders.jsonl") format json
+}

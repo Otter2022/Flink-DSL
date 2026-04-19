@@ -1,0 +1,23 @@
+// Filter sensor readings and convert Celsius to Fahrenheit
+pipeline temperature {
+    parallelism 2
+
+    source readings from kafka("sensors") schema {
+        sensorId  : string
+        celsius   : double
+        humidity  : double
+        timestamp : long
+    }
+
+    filter readings.celsius < 200.0
+    filter readings.humidity >= 0.0
+
+    map {
+        sensorId   = readings.sensorId
+        fahrenheit = readings.celsius * 1.8 + 32.0
+        humidity   = readings.humidity
+        timestamp  = readings.timestamp
+    }
+
+    sink to kafka("sensor-converted") format json
+}

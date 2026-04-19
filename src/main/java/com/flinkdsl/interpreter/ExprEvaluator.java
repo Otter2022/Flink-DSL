@@ -5,12 +5,6 @@ import com.flinkdsl.ast.*;
 
 import java.util.Map;
 
-/**
- * Evaluates an ExprNode against a live Jackson ObjectNode record,
- * returning a Java value (String, Integer, Long, Double, Float, Boolean).
- *
- * Used by the local interpreter — no Flink required.
- */
 public class ExprEvaluator {
 
     private final Map<String, SchemaType> schema;
@@ -19,12 +13,10 @@ public class ExprEvaluator {
         this.schema = schema;
     }
 
-    // ── Main entry ────────────────────────────────────────────────────────────
-
     public Object evaluate(ExprNode expr, ObjectNode record) {
         return switch (expr) {
             case ExprNode.IntLiteral    e -> e.value();
-            case ExprNode.FloatLiteral  e -> e.value();   // stored as double
+            case ExprNode.FloatLiteral  e -> e.value();
             case ExprNode.StringLiteral e -> e.value();
             case ExprNode.BoolLiteral   e -> e.value();
 
@@ -72,8 +64,6 @@ public class ExprEvaluator {
         };
     }
 
-    // ── Arithmetic ────────────────────────────────────────────────────────────
-
     private static Object add(Object l, Object r) {
         if (isDouble(l, r)) return toDouble(l) + toDouble(r);
         if (isFloat(l, r))  return toFloat(l)  + toFloat(r);
@@ -96,11 +86,8 @@ public class ExprEvaluator {
     }
 
     private static Object divide(Object l, Object r) {
-        // Always promote to double for division to avoid integer truncation
         return toDouble(l) / toDouble(r);
     }
-
-    // ── Comparison ────────────────────────────────────────────────────────────
 
     private static boolean compare(Object l, Object r, CompOp op) {
         if (l instanceof String ls) {
@@ -121,8 +108,6 @@ public class ExprEvaluator {
             case GTE -> ld >= rd;
         };
     }
-
-    // ── Numeric helpers ───────────────────────────────────────────────────────
 
     private static boolean isDouble(Object l, Object r) {
         return l instanceof Double || r instanceof Double;

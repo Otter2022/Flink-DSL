@@ -5,10 +5,6 @@ import com.flinkdsl.ast.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Converts a semantically validated Program (AST) into a list of DataflowGraphs.
- * One graph is produced per pipeline.
- */
 public class GraphBuilder {
 
     public List<DataflowGraph> build(Program program) {
@@ -21,7 +17,6 @@ public class GraphBuilder {
         List<DataflowNode> nodes = new ArrayList<>();
         List<DataflowEdge> edges = new ArrayList<>();
 
-        // ── Source ────────────────────────────────────────────────────────────
         DataflowNode.Source source = new DataflowNode.Source(
                 "source_" + pipeline.source().name(),
                 pipeline.source().name(),
@@ -30,7 +25,6 @@ public class GraphBuilder {
         );
         nodes.add(source);
 
-        // ── Transforms ────────────────────────────────────────────────────────
         DataflowNode prev = source;
         int filterIdx = 0, mapIdx = 0, flatMapIdx = 0;
 
@@ -48,7 +42,6 @@ public class GraphBuilder {
             prev = node;
         }
 
-        // ── Sink ──────────────────────────────────────────────────────────────
         DataflowNode.Sink sink = new DataflowNode.Sink(
                 "sink",
                 pipeline.sink().connector(),

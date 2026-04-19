@@ -6,16 +6,7 @@ import com.flinkdsl.grammar.FlinkPipelineParser;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Walks the ANTLR parse tree and produces a typed AST.
- *
- * Entry point:
- *   AstBuilder builder = new AstBuilder();
- *   Program program = builder.visitProgram(parseTree);
- */
 public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
-
-    // ── Top-level ─────────────────────────────────────────────────────────────
 
     @Override
     public Program visitProgram(FlinkPipelineParser.ProgramContext ctx) {
@@ -36,8 +27,6 @@ public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
         SinkNode sink      = (SinkNode) visitSinkStmt(ctx.sinkStmt());
         return new Pipeline(name, parallelism, source, transforms, sink);
     }
-
-    // ── Source ────────────────────────────────────────────────────────────────
 
     @Override
     public SourceNode visitSourceStmt(FlinkPipelineParser.SourceStmtContext ctx) {
@@ -76,8 +65,6 @@ public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
         return new ConnectorNode.FileConnector(stripQuotes(ctx.stringLiteral().getText()));
     }
 
-    // ── Transforms ────────────────────────────────────────────────────────────
-
     @Override
     public TransformNode visitFilterTransform(FlinkPipelineParser.FilterTransformContext ctx) {
         return new TransformNode.FilterTransform((ExprNode) visit(ctx.expression()));
@@ -107,16 +94,12 @@ public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
                 .collect(Collectors.toList());
     }
 
-    // ── Sink ──────────────────────────────────────────────────────────────────
-
     @Override
     public SinkNode visitSinkStmt(FlinkPipelineParser.SinkStmtContext ctx) {
         ConnectorNode connector = (ConnectorNode) visit(ctx.connectorExpr());
         FormatType format = ctx.formatType().JSON() != null ? FormatType.JSON : FormatType.CSV;
         return new SinkNode(connector, format);
     }
-
-    // ── Expressions ───────────────────────────────────────────────────────────
 
     @Override
     public ExprNode visitAndExpr(FlinkPipelineParser.AndExprContext ctx) {
@@ -174,7 +157,6 @@ public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
 
     @Override
     public ExprNode visitParenExpr(FlinkPipelineParser.ParenExprContext ctx) {
-        // Parentheses are transparent — no AST node needed
         return (ExprNode) visit(ctx.expression());
     }
 
@@ -215,8 +197,6 @@ public class AstBuilder extends FlinkPipelineBaseVisitor<Object> {
     public ExprNode visitBoolLiteral(FlinkPipelineParser.BoolLiteralContext ctx) {
         return new ExprNode.BoolLiteral(Boolean.parseBoolean(ctx.BOOLEAN().getText()));
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private static String stripQuotes(String text) {
         return text.substring(1, text.length() - 1).replace("\\\"", "\"");
