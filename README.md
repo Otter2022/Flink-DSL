@@ -5,7 +5,7 @@
 Currently the project can generate an end-to-end pipeline but it supports a minimal amount of the operations flink can do. 
 
 ## Usage of Visitor
-The ANTLR visitor is used in [Link text](src/main/java/com/flinkdsl/ast/AstBuilder.java), it extends the ANTLR visitor to walk the ANTLR parse tree and produce the typed AST.  
+The ANTLR visitor is used in [AstBuilder.java](src/main/java/com/flinkdsl/ast/AstBuilder.java), it extends the ANTLR visitor to walk the ANTLR parse tree and produce the typed AST.  
 
 ## Requirements
 
