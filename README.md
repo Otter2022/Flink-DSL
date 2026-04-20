@@ -47,6 +47,10 @@ java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar <program.fli
 
 **Examples:**
 ```bash
+java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/hello.flink examples/input.jsonl examples/output.jsonl
+```
+
+```bash
 java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/temperature.flink examples/temperature_input.jsonl examples/temperature_output.jsonl
 ```
 
@@ -61,3 +65,5 @@ java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run exampl
 ```bash
 java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/metrics.flink examples/metrics_input.jsonl examples/metrics_output.jsonl
 ```
+
+**you can find the generated java code for flink in [generated/ClickstreamJob.java](generated/ClickstreamJob.java) for these**
