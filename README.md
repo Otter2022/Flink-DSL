@@ -1,4 +1,5 @@
 # Flink DSL
+*it's best to read this in a markdown viewer
 
 ## Current State of Project
 
