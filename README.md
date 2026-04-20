@@ -67,3 +67,7 @@ java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run exampl
 ```
 
 **you can find the generated java code for flink in [generated/ClickstreamJob.java](generated/ClickstreamJob.java) for these**
+/
+/
+**gif of example being ran**
+![Demo](screenshotforreadme/helloexample.gif)
