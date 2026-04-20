@@ -10,6 +10,7 @@ The ANTLR visitor is used in [AstBuilder.java](src/main/java/com/flinkdsl/ast/As
 ## Requirements
 
 - Java 25 (JDK)
+\
 *might work with lower versions of java if you change it in pom.xml, I just used the one I had installed
 You can change the version in the pom.xml here:
 ![Alt text](screenshotforreadme/javaversion.png)
@@ -19,6 +20,7 @@ You can change the version in the pom.xml here:
 ## Installing required dependencies
 
 No manual dependency installation is needed. Running `mvn package` will automatically download all required libraries (ANTLR4 runtime, Jackson, JUnit) from Maven Central on the first build.
+\
 *there might be some issues on mac with the pom.xml file, I built this using linux.
 
 ## Build
