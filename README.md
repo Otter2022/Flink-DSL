@@ -45,23 +45,19 @@ java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar <program.fli
 
 `output-dir` defaults to `./generated/` if omitted. Produces one `<PipelineName>Job.java` per pipeline.
 
-**Example:**
+**Examples:**
 ```bash
-java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar examples/hello.flink
-# → generated/ClickstreamJob.java
+java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/temperature.flink examples/temperature_input.jsonl examples/temperature_output.jsonl
 ```
 
-### Run locally on files (no Flink cluster needed)
-
 ```bash
-java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar \
-     --run <program.flink> <input.jsonl> <output.jsonl>
+java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/orders.flink examples/orders_input.jsonl examples/orders_output.jsonl
 ```
 
-Each line of the input file must be a JSON object whose fields match the source schema.
-
-**Example:**
 ```bash
-java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar \
-     --run examples/hello.flink examples/input.jsonl examples/output.jsonl
+java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/logins.flink examples/logins_input.jsonl examples/logins_output.jsonl
+```
+
+```bash
+java -jar target/flink-dsl-0.1.0-SNAPSHOT-jar-with-dependencies.jar --run examples/metrics.flink examples/metrics_input.jsonl examples/metrics_output.jsonl
 ```
