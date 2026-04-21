@@ -1,5 +1,7 @@
 package com.flinkdsl.ast;
 
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
+
 public interface AstVisitor<T> {
 
     T visitProgram(Program node);

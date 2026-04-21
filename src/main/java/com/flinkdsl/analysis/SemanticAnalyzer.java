@@ -1,6 +1,8 @@
 package com.flinkdsl.analysis;
 
 import com.flinkdsl.ast.*;
+import static com.flinkdsl.ast.ExprNode.CompOp;
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
 
 import java.util.*;
 

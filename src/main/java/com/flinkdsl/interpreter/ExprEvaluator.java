@@ -2,6 +2,9 @@ package com.flinkdsl.interpreter;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flinkdsl.ast.*;
+import static com.flinkdsl.ast.ExprNode.AddOp;
+import static com.flinkdsl.ast.ExprNode.MulOp;
+import static com.flinkdsl.ast.ExprNode.CompOp;
 
 import java.util.Map;
 

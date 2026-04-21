@@ -3,6 +3,7 @@ package com.flinkdsl.codegen;
 import com.flinkdsl.ast.*;
 import com.flinkdsl.ir.DataflowGraph;
 import com.flinkdsl.ir.DataflowNode;
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

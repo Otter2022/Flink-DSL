@@ -2,6 +2,10 @@ package com.flinkdsl.ast;
 
 import com.flinkdsl.grammar.FlinkPipelineBaseVisitor;
 import com.flinkdsl.grammar.FlinkPipelineParser;
+import static com.flinkdsl.ast.ExprNode.AddOp;
+import static com.flinkdsl.ast.ExprNode.MulOp;
+import static com.flinkdsl.ast.ExprNode.CompOp;
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
 
 import java.util.List;
 import java.util.stream.Collectors;

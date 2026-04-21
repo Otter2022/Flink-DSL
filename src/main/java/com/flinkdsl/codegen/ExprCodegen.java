@@ -1,6 +1,8 @@
 package com.flinkdsl.codegen;
 
 import com.flinkdsl.ast.*;
+import static com.flinkdsl.ast.ExprNode.AddOp;
+import static com.flinkdsl.ast.ExprNode.MulOp;
 
 import java.util.Map;
 

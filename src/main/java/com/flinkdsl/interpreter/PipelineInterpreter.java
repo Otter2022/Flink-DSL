@@ -2,8 +2,8 @@ package com.flinkdsl.interpreter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.flinkdsl.ast.FieldAssignment;
 import com.flinkdsl.ast.FieldDecl;
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
 import com.flinkdsl.ast.SchemaType;
 import com.flinkdsl.ir.DataflowGraph;
 import com.flinkdsl.ir.DataflowNode;

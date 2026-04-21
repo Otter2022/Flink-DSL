@@ -2,9 +2,9 @@ package com.flinkdsl.ir;
 
 import com.flinkdsl.ast.ConnectorNode;
 import com.flinkdsl.ast.ExprNode;
-import com.flinkdsl.ast.FieldAssignment;
 import com.flinkdsl.ast.FieldDecl;
 import com.flinkdsl.ast.FormatType;
+import static com.flinkdsl.ast.TransformNode.FieldAssignment;
 
 import java.util.List;
 
